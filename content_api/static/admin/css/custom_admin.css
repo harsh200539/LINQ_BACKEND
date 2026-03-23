@@ -1,0 +1,53 @@
+/* Custom Admin CSS for LINQ */
+:root {
+    --primary: #0e224e;
+    --secondary: #2ea1ff;
+    --accent: #e94e40;
+    --bg-dark: #121212;
+    --text-light: #f8f9fa;
+}
+
+#header {
+    background: var(--primary);
+    color: #fff;
+}
+
+#branding h1 {
+    color: #fff;
+    font-weight: 700;
+}
+
+div.breadcrumbs {
+    background: #f0f3f7;
+}
+
+.module h2,
+.module caption,
+.section h2 {
+    background: var(--primary);
+}
+
+input[type=submit].default {
+    background: var(--secondary);
+}
+
+input[type=submit].default:hover {
+    background: #1a7fcc;
+}
+
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button {
+    background: #79aec8;
+}
+
+a:link,
+a:visited {
+    color: var(--secondary);
+}
+
+#content h1 {
+    color: var(--primary);
+}

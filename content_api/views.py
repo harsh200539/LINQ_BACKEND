@@ -1,0 +1,137 @@
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
+from .models import GalleryImage, TimelineItem, VisionSection, JobOpening, VisionImage, Testimonial, TeamMember, CareerGrowthMember
+from .serializers import (
+    GalleryImageSerializer, TimelineItemSerializer,
+    VisionSectionSerializer, JobOpeningSerializer, VisionImageSerializer, TestimonialSerializer, TeamMemberSerializer, CareerGrowthMemberSerializer
+)
+
+class JobOpeningViewSet(viewsets.ModelViewSet):
+    queryset = JobOpening.objects.all()
+    serializer_class = JobOpeningSerializer
+
+class GalleryImageViewSet(viewsets.ModelViewSet):
+    queryset = GalleryImage.objects.all()
+    serializer_class = GalleryImageSerializer
+
+    # Cache the gallery list endpoint for 15 minutes to reduce database hits
+    @method_decorator(cache_page(60 * 15))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+class TimelineItemViewSet(viewsets.ModelViewSet):
+    queryset = TimelineItem.objects.all()
+    serializer_class = TimelineItemSerializer
+
+    @action(detail=False, methods=['post'])
+    def reorder(self, request):
+        """
+        Expects a payload like:
+        {
+            "ordered_ids": [5, 2, 7, 1]
+        }
+        """
+        ordered_ids = request.data.get('ordered_ids', [])
+
+        if not isinstance(ordered_ids, list):
+            return Response({'error': 'Invalid payload'}, status=status.HTTP_400_BAD_REQUEST)
+
+        for index, t_id in enumerate(ordered_ids):
+            try:
+                item = TimelineItem.objects.get(id=t_id)
+                item.order = index + 1
+                item.save(update_fields=['order'])
+            except TimelineItem.DoesNotExist:
+                continue
+
+        return Response({'status': 'reordered'})
+
+class VisionSectionViewSet(viewsets.ModelViewSet):
+    queryset = VisionSection.objects.all()
+    serializer_class = VisionSectionSerializer
+
+class VisionImageViewSet(viewsets.ModelViewSet):
+    queryset = VisionImage.objects.all()
+    serializer_class = VisionImageSerializer
+
+
+class TestimonialViewSet(viewsets.ModelViewSet):
+    queryset = Testimonial.objects.all()
+    serializer_class = TestimonialSerializer
+
+    @action(detail=False, methods=['post'])
+    def reorder(self, request):
+        """
+        Expects a payload like:
+        {
+            "category": "MIDDLE",
+            "ordered_ids": [5, 2, 7, 1]
+        }
+        """
+        category = request.data.get('category')
+        ordered_ids = request.data.get('ordered_ids', [])
+
+        if not category or not isinstance(ordered_ids, list):
+            return Response({'error': 'Invalid payload'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Bulk update orders based on the index in the array
+        for index, t_id in enumerate(ordered_ids):
+            try:
+                testimonial = Testimonial.objects.get(id=t_id, category=category)
+                testimonial.order = index + 1
+                testimonial.save(update_fields=['order'])
+            except Testimonial.DoesNotExist:
+                continue
+
+        return Response({'status': 'reordered'})
+
+class TeamMemberViewSet(viewsets.ModelViewSet):
+    queryset = TeamMember.objects.all()
+    serializer_class = TeamMemberSerializer
+
+    @action(detail=False, methods=['post'])
+    def reorder(self, request):
+        """
+        Expects a payload like:
+        {
+            "ordered_ids": [5, 2, 7, 1]
+        }
+        """
+        ordered_ids = request.data.get('ordered_ids', [])
+
+        if not isinstance(ordered_ids, list):
+            return Response({'error': 'Invalid payload'}, status=status.HTTP_400_BAD_REQUEST)
+
+        for index, m_id in enumerate(ordered_ids):
+            try:
+                member = TeamMember.objects.get(id=m_id)
+                member.order = index + 1
+                member.save(update_fields=['order'])
+            except TeamMember.DoesNotExist:
+                continue
+
+        return Response({'status': 'reordered'})
+
+class CareerGrowthMemberViewSet(viewsets.ModelViewSet):
+    queryset = CareerGrowthMember.objects.all()
+    serializer_class = CareerGrowthMemberSerializer
+
+    @action(detail=False, methods=['post'])
+    def reorder(self, request):
+        ordered_ids = request.data.get('ordered_ids', [])
+        if not isinstance(ordered_ids, list):
+            return Response({'error': 'Invalid payload'}, status=status.HTTP_400_BAD_REQUEST)
+
+        for index, m_id in enumerate(ordered_ids):
+            try:
+                member = CareerGrowthMember.objects.get(id=m_id)
+                member.order = index + 1
+                member.save(update_fields=['order'])
+            except CareerGrowthMember.DoesNotExist:
+                continue
+
+        return Response({'status': 'reordered'})
