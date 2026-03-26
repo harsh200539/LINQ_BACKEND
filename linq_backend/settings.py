@@ -40,8 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'cloudinary',
-    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -137,17 +135,9 @@ REST_FRAMEWORK = {
     ],
 }
 
-# Cloudinary Settings
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dns993nti',
-    'API_KEY': '826119445666929',
-    'API_SECRET': 'YLLrnJ-NuJtWLMAP2BgK6E9rFjk'
-}
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Session Timeout Settings (2 hours)
