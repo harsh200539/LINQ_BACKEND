@@ -18,8 +18,6 @@ class GalleryImageViewSet(viewsets.ModelViewSet):
     queryset = GalleryImage.objects.all()
     serializer_class = GalleryImageSerializer
 
-    # Cache the gallery list endpoint for 15 minutes to reduce database hits
-    @method_decorator(cache_page(60 * 15))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
