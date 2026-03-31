@@ -1,5 +1,13 @@
 from rest_framework import serializers
-from .models import GalleryImage, TimelineItem, VisionSection, JobOpening, VisionImage, Testimonial, TeamMember, CareerGrowthMember, MemberExperience
+from .models import AdminUser, GalleryImage, TimelineItem, VisionSection, JobOpening, VisionImage, Testimonial, TeamMember, CareerGrowthMember, MemberExperience
+
+class AdminUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdminUser
+        fields = ['id', 'username', 'password', 'is_superadmin', 'permissions', 'created_at']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
 class JobOpeningSerializer(serializers.ModelSerializer):
     class Meta:

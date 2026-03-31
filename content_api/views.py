@@ -4,11 +4,33 @@ from rest_framework.response import Response
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
-from .models import GalleryImage, TimelineItem, VisionSection, JobOpening, VisionImage, Testimonial, TeamMember, CareerGrowthMember
+from .models import AdminUser, GalleryImage, TimelineItem, VisionSection, JobOpening, VisionImage, Testimonial, TeamMember, CareerGrowthMember
 from .serializers import (
-    GalleryImageSerializer, TimelineItemSerializer,
+    AdminUserSerializer, GalleryImageSerializer, TimelineItemSerializer,
     VisionSectionSerializer, JobOpeningSerializer, VisionImageSerializer, TestimonialSerializer, TeamMemberSerializer, CareerGrowthMemberSerializer
 )
+
+class AdminUserViewSet(viewsets.ModelViewSet):
+    queryset = AdminUser.objects.all()
+    serializer_class = AdminUserSerializer
+
+    @action(detail=False, methods=['post'])
+    def login(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        try:
+            user = AdminUser.objects.get(username=username)
+            if user.check_password(password):
+                serializer = self.get_serializer(user)
+                return Response({
+                    'status': 'success',
+                    'user': serializer.data
+                })
+            else:
+                return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        except AdminUser.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
 class JobOpeningViewSet(viewsets.ModelViewSet):
     queryset = JobOpening.objects.all()

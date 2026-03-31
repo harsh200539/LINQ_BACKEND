@@ -1,4 +1,25 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password, check_password
+
+class AdminUser(models.Model):
+    username = models.CharField(max_length=150, unique=True)
+    password = models.CharField(max_length=128) # Hashed password
+    is_superadmin = models.BooleanField(default=False)
+    # Permissions stored as JSON list: ["gallery", "timeline", etc.]
+    permissions = models.JSONField(default=list, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        # Hash password if it's not already hashed (starts with pbkdf2_sha256$)
+        if self.password and not self.password.startswith('pbkdf2_sha256$'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+    def check_password(self, raw_password):
+        return check_password(raw_password, self.password)
+
+    def __str__(self):
+        return self.username
 
 class GalleryImage(models.Model):
     IMAGE_TYPES = [

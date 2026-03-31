@@ -1,53 +1,154 @@
 /* Custom Admin CSS for LINQ */
 :root {
-    --primary: #0e224e;
-    --secondary: #2ea1ff;
-    --accent: #e94e40;
-    --bg-dark: #121212;
-    --text-light: #f8f9fa;
+    --admin-primary: #405189;
+    --admin-secondary: #0ab39c;
+    --admin-bg-light: #f3f3f9;
+    --admin-white: #ffffff;
+    --admin-border: #e9ebec;
+    --admin-text-muted: #878a99;
 }
 
+/* Login Page Styles */
+body.login {
+    background: linear-gradient(rgba(14, 34, 78, 0.85), rgba(14, 34, 78, 0.85)), 
+                url('/static/admin/img/login-bg.webp') center/cover no-repeat !important;
+    background-color: #0e224e !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+body.login #container {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+body.login #content {
+    background: var(--admin-white);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Hide the default Django header on login page if it exists outside content */
+body.login #header {
+    display: none;
+}
+
+.login-header img {
+    height: 50px;
+    margin-bottom: 20px;
+    filter: brightness(0); /* Black logo on white card */
+}
+
+.login-header h2 {
+    color: var(--admin-primary);
+    font-weight: 700;
+    margin-bottom: 8px;
+    margin-top: 0;
+}
+
+.login-header p {
+    color: var(--admin-text-muted);
+    font-size: 14px;
+}
+
+/* Form Styles */
+body.login .form-row {
+    padding: 0;
+    margin-bottom: 20px;
+    border: none;
+}
+
+body.login label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--admin-primary);
+    font-size: 14px;
+}
+
+body.login input[type="text"],
+body.login input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--admin-border);
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+body.login .submit-row {
+    padding: 0;
+    margin-top: 25px;
+    background: none;
+    border: none;
+    text-align: center;
+}
+
+body.login input[type="submit"] {
+    width: 100%;
+    background: var(--admin-secondary) !important;
+    color: white !important;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+body.login input[type="submit"]:hover {
+    background: #099885 !important;
+}
+
+/* Global Admin Improvements */
 #header {
-    background: var(--primary);
+    background: var(--admin-primary);
     color: #fff;
+    padding: 15px 20px;
 }
 
 #branding h1 {
     color: #fff;
     font-weight: 700;
+    font-size: 18px;
+    margin: 0;
 }
 
 div.breadcrumbs {
-    background: #f0f3f7;
+    background: var(--admin-bg-light);
+    border-bottom: 1px solid var(--admin-border);
+    padding: 10px 20px;
 }
 
 .module h2,
 .module caption,
 .section h2 {
-    background: var(--primary);
+    background: var(--admin-primary);
 }
 
-input[type=submit].default {
-    background: var(--secondary);
-}
-
-input[type=submit].default:hover {
-    background: #1a7fcc;
-}
-
-.button,
-input[type=submit],
-input[type=button],
-.submit-row input,
-a.button {
-    background: #79aec8;
-}
-
-a:link,
-a:visited {
-    color: var(--secondary);
-}
-
-#content h1 {
-    color: var(--primary);
+.errornote {
+    background-color: #fce4e4;
+    border: 1px solid #f06548;
+    color: #f06548;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 13px;
 }

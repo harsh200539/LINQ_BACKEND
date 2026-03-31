@@ -1,10 +1,11 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    GalleryImageViewSet, TimelineItemViewSet, VisionSectionViewSet, JobOpeningViewSet, VisionImageViewSet, TestimonialViewSet, TeamMemberViewSet, CareerGrowthMemberViewSet
+    AdminUserViewSet, GalleryImageViewSet, TimelineItemViewSet, VisionSectionViewSet, JobOpeningViewSet, VisionImageViewSet, TestimonialViewSet, TeamMemberViewSet, CareerGrowthMemberViewSet
 )
 
 router = DefaultRouter()
+router.register(r'admin-users', AdminUserViewSet)
 router.register(r'gallery', GalleryImageViewSet)
 router.register(r'timeline', TimelineItemViewSet)
 router.register(r'vision', VisionSectionViewSet)
