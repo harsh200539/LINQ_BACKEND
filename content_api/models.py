@@ -10,9 +10,15 @@ class AdminUser(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        # Hash password if it's not already hashed (starts with pbkdf2_sha256$)
+        # Hash password if it's not already hashed
         if self.password and not self.password.startswith('pbkdf2_sha256$'):
             self.password = make_password(self.password)
+        
+        # DEBUG: Log permissions to terminal
+        print(f"\n[DEBUG] SAVING USER: {self.username}")
+        print(f"[DEBUG] PERMISSIONS: {self.permissions}")
+        print(f"[DEBUG] IS_SUPER: {self.is_superadmin}\n")
+        
         super().save(*args, **kwargs)
 
     def check_password(self, raw_password):

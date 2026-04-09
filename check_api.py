@@ -1,7 +1,7 @@
 import requests
 
 try:
-    response = requests.get('https://harsh17042005.pythonanywhere.com/api/job-openings/')
+    response = requests.get('http://harsh17042005.pythonanywhere.com//api/job-openings/')
     if response.status_code == 200:
         data = response.json()
         print("API Response:")

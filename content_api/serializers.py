@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import AdminUser, GalleryImage, TimelineItem, VisionSection, JobOpening, VisionImage, Testimonial, TeamMember, CareerGrowthMember, MemberExperience
 
 class AdminUserSerializer(serializers.ModelSerializer):
+    permissions = serializers.JSONField(required=False, default=list)
+
     class Meta:
         model = AdminUser
         fields = ['id', 'username', 'password', 'is_superadmin', 'permissions', 'created_at']

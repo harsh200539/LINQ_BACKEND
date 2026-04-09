@@ -49,13 +49,16 @@ class TimelineItemViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def reorder(self, request):
-        """
-        Expects a payload like:
-        {
-            "ordered_ids": [5, 2, 7, 1]
-        }
-        """
         ordered_ids = request.data.get('ordered_ids', [])
+        user_id = request.data.get('user_id')
+
+        # Permission check
+        try:
+            user = AdminUser.objects.get(id=user_id)
+            if not user.is_superadmin and 'timeline_edit' not in (user.permissions or []):
+                return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+        except:
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
 
         if not isinstance(ordered_ids, list):
             return Response({'error': 'Invalid payload'}, status=status.HTTP_400_BAD_REQUEST)
@@ -85,15 +88,17 @@ class TestimonialViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def reorder(self, request):
-        """
-        Expects a payload like:
-        {
-            "category": "MIDDLE",
-            "ordered_ids": [5, 2, 7, 1]
-        }
-        """
         category = request.data.get('category')
         ordered_ids = request.data.get('ordered_ids', [])
+        user_id = request.data.get('user_id')
+
+        # Permission check
+        try:
+            user = AdminUser.objects.get(id=user_id)
+            if not user.is_superadmin and 'testimonials_edit' not in (user.permissions or []):
+                return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+        except:
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
 
         if not category or not isinstance(ordered_ids, list):
             return Response({'error': 'Invalid payload'}, status=status.HTTP_400_BAD_REQUEST)
@@ -115,13 +120,16 @@ class TeamMemberViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def reorder(self, request):
-        """
-        Expects a payload like:
-        {
-            "ordered_ids": [5, 2, 7, 1]
-        }
-        """
         ordered_ids = request.data.get('ordered_ids', [])
+        user_id = request.data.get('user_id')
+
+        # Permission check
+        try:
+            user = AdminUser.objects.get(id=user_id)
+            if not user.is_superadmin and 'team_edit' not in (user.permissions or []):
+                return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+        except:
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
 
         if not isinstance(ordered_ids, list):
             return Response({'error': 'Invalid payload'}, status=status.HTTP_400_BAD_REQUEST)
@@ -143,6 +151,16 @@ class CareerGrowthMemberViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def reorder(self, request):
         ordered_ids = request.data.get('ordered_ids', [])
+        user_id = request.data.get('user_id')
+
+        # Permission check
+        try:
+            user = AdminUser.objects.get(id=user_id)
+            if not user.is_superadmin and 'growth_edit' not in (user.permissions or []):
+                return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+        except:
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
         if not isinstance(ordered_ids, list):
             return Response({'error': 'Invalid payload'}, status=status.HTTP_400_BAD_REQUEST)
 
