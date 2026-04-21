@@ -7,7 +7,7 @@ from django.views.decorators.cache import cache_page
 from .models import AdminUser, GalleryImage, TimelineItem, VisionSection, JobOpening, VisionImage, Testimonial, TeamMember, CareerGrowthMember
 from .serializers import (
     AdminUserSerializer, GalleryImageSerializer, TimelineItemSerializer,
-    VisionSectionSerializer, JobOpeningSerializer, VisionImageSerializer, TestimonialSerializer, TeamMemberSerializer, CareerGrowthMemberSerializer
+    VisionSectionSerializer, JobOpeningSerializer, JobOpeningListSerializer, VisionImageSerializer, TestimonialSerializer, TeamMemberSerializer, CareerGrowthMemberSerializer
 )
 
 class AdminUserViewSet(viewsets.ModelViewSet):
@@ -34,7 +34,12 @@ class AdminUserViewSet(viewsets.ModelViewSet):
 
 class JobOpeningViewSet(viewsets.ModelViewSet):
     queryset = JobOpening.objects.all()
-    serializer_class = JobOpeningSerializer
+    lookup_field = 'slug'
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return JobOpeningListSerializer
+        return JobOpeningSerializer
 
 class GalleryImageViewSet(viewsets.ModelViewSet):
     queryset = GalleryImage.objects.all()

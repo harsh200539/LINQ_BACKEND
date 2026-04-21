@@ -178,25 +178,47 @@ class TeamMember(models.Model):
 
     def __str__(self):
         return self.title
+from django.utils.text import slugify
+
 class JobOpening(models.Model):
-    JOB_TYPES = [
+    STATUS_CHOICES = [
+        ('Active', 'Active'),
+        ('Inactive', 'Inactive'),
+    ]
+    EMPLOYMENT_TYPES = [
         ('Full Time', 'Full Time'),
         ('Part Time', 'Part Time'),
         ('Remote', 'Remote'),
         ('Contract', 'Contract'),
     ]
+
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    slug = models.SlugField(unique=True, blank=True)
+    
+    short_description = models.TextField(max_length=300, help_text="Brief summary for card view (max 300 chars)")
+    full_description = models.TextField(help_text="Detailed description for the job page")
+    
+    context = models.TextField(blank=True, null=True, help_text="Optional context about the role")
+    qualifications = models.JSONField(default=list, blank=True, help_text="List of requirements/qualifications")
+    
     location = models.CharField(max_length=100)
-    job_type = models.CharField(max_length=20, choices=JOB_TYPES, default='Full Time')
-    qualification = models.CharField(max_length=255, blank=True)
-    status = models.CharField(max_length=50, default='Active')
+    employment_type = models.CharField(max_length=20, choices=EMPLOYMENT_TYPES, default='Full Time')
+    
+    reporting_to = models.CharField(max_length=100, blank=True, help_text="Who this role reports to")
+    application_email = models.EmailField(help_text="Email for receiving applications")
+    
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Active')
     status_color = models.CharField(max_length=7, default='#10b981') # Default green
-    emails = models.TextField(blank=True, help_text="Comma-separated email addresses")
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title

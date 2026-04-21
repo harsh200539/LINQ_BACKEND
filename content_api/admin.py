@@ -1,11 +1,18 @@
 from django.contrib import admin
-from .models import GalleryImage, TimelineItem, VisionSection, AboutUsSection, VisionImage, Testimonial, TeamMember, CareerGrowthMember, MemberExperience
+from .models import GalleryImage, TimelineItem, VisionSection, AboutUsSection, VisionImage, Testimonial, TeamMember, CareerGrowthMember, MemberExperience, JobOpening
 
 class BaseAdmin(admin.ModelAdmin):
     class Media:
         css = {
             'all': ('admin/css/custom_admin.css',)
         }
+
+@admin.register(JobOpening)
+class JobOpeningAdmin(BaseAdmin):
+    list_display = ('title', 'location', 'employment_type', 'status', 'created_at')
+    list_filter = ('status', 'employment_type', 'location')
+    prepopulated_fields = {'slug': ('title',)}
+    search_fields = ('title', 'full_description', 'short_description')
 
 @admin.register(GalleryImage)
 class GalleryImageAdmin(BaseAdmin):

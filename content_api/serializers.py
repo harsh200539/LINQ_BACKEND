@@ -16,6 +16,11 @@ class JobOpeningSerializer(serializers.ModelSerializer):
         model = JobOpening
         fields = '__all__'
 
+class JobOpeningListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobOpening
+        fields = ['id', 'title', 'slug', 'short_description', 'location', 'employment_type', 'status', 'status_color', 'created_at']
+
 class GalleryImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = GalleryImage
