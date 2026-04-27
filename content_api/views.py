@@ -32,9 +32,29 @@ class AdminUserViewSet(viewsets.ModelViewSet):
         except AdminUser.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
+from django.shortcuts import get_object_or_404
+
 class JobOpeningViewSet(viewsets.ModelViewSet):
     queryset = JobOpening.objects.all()
     lookup_field = 'slug'
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+        lookup_value = self.kwargs[lookup_url_kwarg]
+
+        # Try to find by ID first if it's numeric
+        if lookup_value.isdigit():
+            try:
+                return get_object_or_404(queryset, id=lookup_value)
+            except:
+                pass # If not found by ID, try slug
+
+        # Fallback to slug lookup
+        filter_kwargs = {self.lookup_field: lookup_value}
+        obj = get_object_or_404(queryset, **filter_kwargs)
+        self.check_object_permissions(self.request, obj)
+        return obj
 
     def get_serializer_class(self):
         if self.action == 'list':

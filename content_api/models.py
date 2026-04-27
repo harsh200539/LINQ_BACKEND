@@ -195,17 +195,17 @@ class JobOpening(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
     
-    short_description = models.TextField(max_length=300, help_text="Brief summary for card view (max 300 chars)")
-    full_description = models.TextField(help_text="Detailed description for the job page")
+    short_description = models.TextField(max_length=300, blank=True, null=True, help_text="Brief summary for card view (max 300 chars)")
+    full_description = models.TextField(blank=True, null=True, help_text="Detailed description for the job page")
     
     context = models.TextField(blank=True, null=True, help_text="Optional context about the role")
     qualifications = models.JSONField(default=list, blank=True, help_text="List of requirements/qualifications")
     
-    location = models.CharField(max_length=100)
+    location = models.CharField(max_length=100, blank=True, null=True)
     employment_type = models.CharField(max_length=20, choices=EMPLOYMENT_TYPES, default='Full Time')
     
     reporting_to = models.CharField(max_length=100, blank=True, help_text="Who this role reports to")
-    application_email = models.EmailField(help_text="Email for receiving applications")
+    application_email = models.EmailField(blank=True, null=True, help_text="Email for receiving applications")
     
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Active')
     status_color = models.CharField(max_length=7, default='#10b981') # Default green
@@ -217,7 +217,22 @@ class JobOpening(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            # Generate base slug
+            base_slug = slugify(self.title)
+            if not base_slug:
+                base_slug = 'job'
+            
+            slug = base_slug
+            counter = 1
+            
+            # Ensure uniqueness
+            # We exclude the current instance if it already exists (though it shouldn't have a slug then)
+            while JobOpening.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            
+            self.slug = slug
+            
         super().save(*args, **kwargs)
 
     def __str__(self):
